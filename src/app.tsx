@@ -18,7 +18,6 @@ import { SysUserType } from './repository/system/sysUser';
 import { requestConfig } from './requestConfig';
 import { queryCurrentUserMenus } from './services/system/sysMenuService';
 import { queryCurrentUser } from './services/system/sysUserService';
-import { getWithExpiry } from './utils/localStorage';
 
 const loginPath = '/user/login';
 
@@ -46,13 +45,9 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
 
-  const isLoggedIn = () => {
-    return getWithExpiry('manager-admin') === 'true' || false;
-  };
-
   const { location } = history;
-  if (!isLoggedIn() && location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
+  const currentUser = await fetchUserInfo();
+  if (currentUser && location.pathname !== loginPath) {
     return {
       fetchUserInfo,
       currentUser,
