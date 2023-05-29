@@ -35,7 +35,7 @@ const RescourceActionButtion: React.FC<Props> = ({
         width={500}
         trigger={<Button type="primary" icon={<EditOutlined />} />}
         onFinish={async (values) => {
-          const data = { ...values, id: record.id };
+          const data = { ...values, id: record.id, type: record.type };
           const response = await updateMenuById(data);
           if (response.code === 200) {
             handleFetchList();
