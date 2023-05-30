@@ -61,32 +61,28 @@ const AssignMenuAuth: React.FC = () => {
   };
 
   function filterParentNodes(
-    dataNode: DataNode,
+    dataNodes: DataNode[],
     menuIds: React.Key[],
   ): React.Key[] {
-    const checkedMenuIds = [...menuIds];
+    let checkedMenuIds = [...menuIds];
 
     function traverseTree(node: DataNode): boolean {
       if (node.children && node.children.length > 0) {
-        const allChildrenChecked = node.children.every((child) => {
-          return (
-            traverseTree(child) && checkedMenuIds.includes(String(child.key))
-          );
-        });
-
+        const childrenChecked = node.children.map((child) =>
+          traverseTree(child),
+        );
+        const allChildrenChecked = childrenChecked.every((val) => val);
         if (!allChildrenChecked) {
-          const index = checkedMenuIds.indexOf(String(node.key));
-          if (index > -1) {
-            checkedMenuIds.splice(index, 1);
-          }
+          checkedMenuIds = checkedMenuIds.filter(
+            (id) => id !== String(node.key),
+          );
         }
         return allChildrenChecked;
       } else {
         return checkedMenuIds.includes(String(node.key));
       }
     }
-
-    traverseTree(dataNode);
+    dataNodes.forEach(traverseTree);
     return checkedMenuIds as React.Key[];
   }
 
@@ -96,14 +92,8 @@ const AssignMenuAuth: React.FC = () => {
       if (response.code === 200) {
         const { dataNode, menuIds } = response.data;
         setTreeDataNode(dataNode);
-
-        const filteredMenuIdsArray = dataNode.map((node: DataNode) =>
-          filterParentNodes(node, menuIds),
-        );
-        const combinedFilteredMenuIds =
-          filteredMenuIdsArray[1].flat() as React.Key[];
-
-        setSelectedKeys(combinedFilteredMenuIds);
+        const filteredMenuIdsArray = filterParentNodes(dataNode, menuIds);
+        setSelectedKeys(filteredMenuIdsArray);
         setCombinedKeys(menuIds);
       }
     };
