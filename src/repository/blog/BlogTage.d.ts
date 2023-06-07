@@ -12,4 +12,9 @@ export declare namespace BlogTagType {
     pageSize?: number;
     searchObj?: string;
   }
+  interface TreeNode {
+    title: string;
+    value: string;
+    children: TreeNode[];
+  }
 }

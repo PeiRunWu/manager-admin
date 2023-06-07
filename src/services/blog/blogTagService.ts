@@ -38,3 +38,12 @@ export async function removeBlogTagById(id: string) {
     },
   );
 }
+
+export async function getBlogTagTreeNode() {
+  return request<BaseResponse<BlogTagType.TreeNode[]>>(
+    '/api/manager-system/blog/tag/getBlogTagTreeNode',
+    {
+      method: 'GET',
+    },
+  );
+}

@@ -113,7 +113,7 @@ const EditSysUserPage: React.FC<Props> = React.memo(({ record }) => {
         name="file"
         label="头像"
         max={1}
-        action={'/api/system/oss/file'}
+        action={'/api/manager-system/system/oss/file'}
         fieldProps={{
           name: 'file',
           fileList: fileList,

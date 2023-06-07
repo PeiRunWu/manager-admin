@@ -13,12 +13,14 @@ specifiers:
   prettier-plugin-organize-imports: ^3.2.2
   prettier-plugin-packagejson: ^2.4.3
   typescript: ^5.0.3
+  vditor: ^3.9.3
 
 dependencies:
   '@ant-design/icons': registry.npmjs.org/@ant-design/icons/5.0.1
   '@ant-design/pro-components': registry.npmjs.org/@ant-design/pro-components/2.4.6_antd@5.4.6
   '@umijs/max': registry.npmjs.org/@umijs/max/4.0.67_7zktullfxqo22hu7bome36k2my
   antd: registry.npmjs.org/antd/5.4.6
+  vditor: registry.npmjs.org/vditor/3.9.3
 
 devDependencies:
   '@types/react': registry.npmjs.org/@types/react/18.2.0
@@ -6749,6 +6751,12 @@ packages:
     resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/detect-node/-/detect-node-2.1.0.tgz}
     name: detect-node
     version: 2.1.0
+    dev: false
+
+  registry.npmjs.org/diff-match-patch/1.0.5:
+    resolution: {integrity: sha512-IayShXAgj/QMXgB0IWmKx+rOPuGMhqm5w6jvFxmVenXKIzRqTAAsbBPT3kWQeGANj3jGgvcvv4yK6SxqYmikgw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/diff-match-patch/-/diff-match-patch-1.0.5.tgz}
+    name: diff-match-patch
+    version: 1.0.5
     dev: false
 
   registry.npmjs.org/diffie-hellman/5.0.3:
@@ -13986,6 +13994,14 @@ packages:
     name: vary
     version: 1.1.2
     engines: {node: '>= 0.8'}
+    dev: false
+
+  registry.npmjs.org/vditor/3.9.3:
+    resolution: {integrity: sha512-w3ZSa8SQaZNFEO7XeHsJEW6NoXH4FgqU1BHVYfQ2tGk1y9rQMVWYJOXegO25QhgnAIF4qtm/AoylUg4b5mW7cg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/vditor/-/vditor-3.9.3.tgz}
+    name: vditor
+    version: 3.9.3
+    dependencies:
+      diff-match-patch: registry.npmjs.org/diff-match-patch/1.0.5
     dev: false
 
   registry.npmjs.org/vite/4.3.1_less@4.1.3:

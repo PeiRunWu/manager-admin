@@ -103,19 +103,6 @@ const UserActionButtons: FC<Props> = React.memo(({ record, handleRefresh }) => {
           }}
         />
       </ModalForm>
-
-      {/* <Tooltip title="分配角色">
-    
-      </Tooltip> */}
-
-      {/* <Modal
-        title=""
-        open={isAssisgnRole}
-        onCancel={handleAssignCancel}
-        footer={null}
-      >
-         <AssignRoles id={id} onSuccess={handleAssignSuccess} username={username} /> 
-      </Modal> */}
     </Space>
   );
 });
