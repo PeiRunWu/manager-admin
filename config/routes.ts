@@ -66,10 +66,18 @@ export default [
     path: '/system/sysResource/list',
     component: './System/SysResource',
   },
-  { path: '/blog', redirect: '/blog/tag/list' },
+  { path: '/blog', redirect: '/blog/article/list' },
   {
     path: '/blog/tag/list',
     component: './Blog/Tag',
+  },
+  {
+    path: '/blog/article/list',
+    component: './Blog/Article',
+  },
+  {
+    path: '/blog/writeArticle/list',
+    component: './Blog/WriteArticle',
   },
   {
     path: '*',
