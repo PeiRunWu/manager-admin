@@ -42,7 +42,7 @@ const UserActionButtons: FC<Props> = React.memo(({ record, handleRefresh }) => {
             id: record.id,
           };
           if (values.file) {
-            data.headUrl = values.file[0]?.response || '';
+            data.headUrl = values.file[0]?.response.data || '';
           }
           delete data.file;
           const response = await updateSysUserById(data);

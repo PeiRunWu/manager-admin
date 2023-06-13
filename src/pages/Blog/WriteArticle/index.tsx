@@ -1,6 +1,11 @@
-import { BlogArticle } from '@/repository/blog/BlogArticle';
-import { saveArticle } from '@/services/blog/BlogArticleService';
+import { BlogArticleType } from '@/repository/blog/BlogArticle';
+import {
+  getBlogArticleById,
+  saveArticle,
+  updateBlogArticleById,
+} from '@/services/blog/BlogArticleService';
 import { getBlogTagTreeNode } from '@/services/blog/blogTagService';
+import { deleteOssFile } from '@/services/oss/ossService';
 import {
   PageContainer,
   ProForm,
@@ -10,19 +15,52 @@ import {
   ProFormTreeSelect,
   ProFormUploadButton,
 } from '@ant-design/pro-components';
-import { history } from '@umijs/max';
+import { history, useLocation } from '@umijs/max';
 import { Modal, TreeSelect, message } from 'antd';
-import { UploadChangeParam } from 'antd/es/upload';
+import { UploadChangeParam, UploadFile } from 'antd/es/upload';
 import { useEffect, useState } from 'react';
 import Vditor from 'vditor';
 import 'vditor/dist/index.css';
 import styles from './index.less';
 const WriteArticle: React.FC = () => {
-  const [htmlValue, setHtmlValue] = useState<string>();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get('id');
+  const [htmlValue, setHtmlValue] = useState<string>('');
+  const [record, setRecord] = useState<BlogArticleType.BlogArticle>();
   const [previewVisible, setPreviewVisible] = useState(false);
-  const [selectedValues, setSelectedValues] = useState([]);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [previewImage, setPreviewImage] = useState('');
   const [fileList, setFileList] = useState<any[]>([]);
+
+  useEffect(() => {
+    const handleGetBlogArticle = async () => {
+      if (id) {
+        const response = await getBlogArticleById(id);
+        if (response.code === 200) {
+          setHtmlValue(response.data.articleContent);
+          setRecord(response.data);
+          setTimeout(() => {
+            setSelectedValues(response.data.articleTag);
+          }, 100);
+          setFileList(
+            response.data.cover
+              ? [
+                  {
+                    uid: '-1',
+                    name: 'avatar.jpg',
+                    status: 'done',
+                    url: response.data.cover,
+                  },
+                ]
+              : [],
+          );
+        }
+      }
+    };
+    handleGetBlogArticle();
+  }, [id]);
+
   useEffect(() => {
     const vditor = new Vditor('vditor', {
       toolbar: [
@@ -76,13 +114,14 @@ const WriteArticle: React.FC = () => {
       },
       lang: 'zh_CN',
       height: 500,
-      after: undefined,
+      after: () => {
+        vditor.setValue(htmlValue);
+      },
       input: () => {
         setHtmlValue(vditor.getHTML());
       },
     });
-  }, []);
-
+  }, [htmlValue]);
   const handlePreview = async (file: any) => {
     setPreviewImage(file.url || file.thumbUrl);
     setPreviewVisible(true);
@@ -93,12 +132,22 @@ const WriteArticle: React.FC = () => {
     if (lastFile && lastFile[0]?.response) {
     }
   };
+  const handleRemove = async (file: UploadFile) => {
+    await deleteOssFile({ fileName: file.response });
+  };
   return (
     <PageContainer>
       <div id="vditor" className="vditor" />
       <div className={styles.main}>
-        <ProForm<BlogArticle.BlogArticle>
+        <ProForm<BlogArticleType.BlogArticle>
           className={styles.proForm}
+          key={record ? record.id : 'id'}
+          initialValues={{
+            articleTitle: record?.articleTitle,
+            articleSummary: record?.articleSummary,
+            articleType: record?.articleType,
+            visibleRange: record?.visibleRange,
+          }}
           layout="horizontal"
           submitter={{
             searchConfig: {
@@ -111,7 +160,7 @@ const WriteArticle: React.FC = () => {
             },
           }}
           onFinish={async (values) => {
-            let articleContent = values.articleContent;
+            let articleContent = htmlValue;
             if (!articleContent) {
               articleContent = localStorage.getItem('vditorvditor') || '';
             }
@@ -121,10 +170,21 @@ const WriteArticle: React.FC = () => {
               articleTag: selectedValues,
             };
             if (values.file) {
-              data.cover = values.file[0]?.response || '';
+              data.cover = values.file[0]?.response.data || '';
             }
+            
+            if (record && id) {
+              data.id = id;
+            }
+
             delete data.file;
-            const response = await saveArticle(data);
+            let response;
+            if (record) {
+              console.log(data);
+              response = await updateBlogArticleById(data);
+            } else {
+              response = await saveArticle(data);
+            }
             if (response.code === 200) {
               localStorage.removeItem('vditorvditor');
               history.push('/blog/article/list');
@@ -177,13 +237,14 @@ const WriteArticle: React.FC = () => {
             name="file"
             label="添加封面"
             max={1}
-            action={'/api/manager-system/system/oss/file'}
+            action={'/api/manager-third-party/oss/uploadOssFile'}
             fieldProps={{
               name: 'file',
               fileList: fileList,
               listType: 'picture-card',
               onPreview: handlePreview,
               onChange: handleChange,
+              onRemove: handleRemove,
             }}
           />
           <ProFormTextArea

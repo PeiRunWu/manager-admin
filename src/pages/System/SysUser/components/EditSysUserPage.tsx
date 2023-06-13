@@ -1,8 +1,9 @@
 import { SysUserType } from '@/repository/system/sysUser';
+import { deleteOssFile } from '@/services/oss/ossService';
 import { ProFormText, ProFormUploadButton } from '@ant-design/pro-components';
 import { Modal } from 'antd';
 import { Rule } from 'antd/es/form';
-import { UploadChangeParam } from 'antd/es/upload';
+import { UploadChangeParam, UploadFile } from 'antd/es/upload';
 import React, { useState } from 'react';
 
 const phoneValidator: Rule = {
@@ -41,6 +42,10 @@ const EditSysUserPage: React.FC<Props> = React.memo(({ record }) => {
     setFileList(lastFile);
     if (lastFile && lastFile[0]?.response) {
     }
+  };
+
+  const handleRemove = async (file: UploadFile) => {
+    await deleteOssFile({ fileName: file.response });
   };
 
   return (
@@ -113,13 +118,14 @@ const EditSysUserPage: React.FC<Props> = React.memo(({ record }) => {
         name="file"
         label="头像"
         max={1}
-        action={'/api/manager-system/system/oss/file'}
+        action={'/api/manager-third-party/oss/uploadOssFile'}
         fieldProps={{
           name: 'file',
           fileList: fileList,
           listType: 'picture-card',
           onPreview: handlePreview,
           onChange: handleChange,
+          onRemove: handleRemove,
         }}
       />
       <Modal
