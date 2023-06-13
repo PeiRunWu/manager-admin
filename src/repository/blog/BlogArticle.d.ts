@@ -1,6 +1,6 @@
-export declare namespace BlogArticle {
+export declare namespace BlogArticleType {
   interface BlogArticle {
-    id: string;
+    id?: string;
     author: string;
     articleTitle: string;
     articleContent: string;
@@ -11,5 +11,17 @@ export declare namespace BlogArticle {
     visibleRange: number;
     top: number;
     file?: any;
+  }
+
+  interface BlogArticleTop{
+    id: string;
+    top: number;
+  }
+
+  interface PageQuery {
+    current?: number;
+    pageSize?: number;
+    articleTitle?: string;
+    articleType?: string;
   }
 }

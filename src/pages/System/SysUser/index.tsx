@@ -122,7 +122,7 @@ const SysUser: React.FC = () => {
             }
             onFinish={async (values) => {
               if (values.file) {
-                values.headUrl = values.file[0]?.response || '';
+                values.headUrl = values.file[0]?.response.data || '';
               }
               delete values.file;
               const response = await createSysUser(values);
@@ -137,7 +137,9 @@ const SysUser: React.FC = () => {
         ]}
         request={async (params) => {
           const data = {
-            ...params,
+            searchObj: params.searchObj,
+            current: params.current,
+            pageSize: params.pageSize,
             createTimeBegin:
               params.createTime && params.createTime.length > 0
                 ? params.createTime[0]

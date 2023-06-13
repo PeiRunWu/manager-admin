@@ -80,6 +80,7 @@ const Tag: React.FC = () => {
         columns={columns}
         actionRef={actionRef}
         rowKey={'id'}
+        pagination={{ pageSize: 10 }}
         toolBarRender={() => [
           parentIds.length > 1 && (
             <Button
